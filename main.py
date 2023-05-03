@@ -39,6 +39,15 @@ test_df = test_df[cols]
 # カテゴリ変数を数値型に変換
 train_df = preparation(train_df)
 test_df = preparation(test_df)
+# train_dfとtest_dfのカラムをそろえる
+diff_cols = list(set(train_df.columns) - set(test_df.columns))
+for col in diff_cols:
+        if col not in list(train_df.columns):
+                train_df[col] = 0
+        elif col not in list(test_df.columns):
+                test_df[col] = 0
+        else:
+                 pass
 
 
 ##############################
