@@ -9,8 +9,8 @@ class xgbObj:
         self.train_df = train_df
         self.train_labels = train_labels
         self.model = None
-    
-    def modeling(self):
+
+    def modeling(self, num_round):
         # 学習用データと評価用データに分割
         X_train, X_val, y_train, y_val = train_test_split(self.train_df, self.train_labels, test_size=0.2, random_state=42)
 
@@ -31,19 +31,18 @@ class xgbObj:
         }
 
         # 学習の実行
-        num_round = 100
         early_stopping_rounds = 50
         watchlist = [(dtrain, 'train'), (dval, 'eval')]
 
         model = xgb.train(params, dtrain, num_round, watchlist, early_stopping_rounds=early_stopping_rounds, verbose_eval=10)
         self.model = model
-    
+
         # 評価用データで予測
         y_pred = model.predict(dval)
         # MAEの計算
         mae = mean_absolute_error(y_val, y_pred)
         print("Mean Absolute Error: {:.4f}".format(mae))
-    
+
     def predict(self, test_df):
         # test_dfに対して値を予測
         dtest = xgb.DMatrix(test_df)
@@ -52,5 +51,5 @@ class xgbObj:
         # 予測結果をデータフレームに変換
         test_result_df = pd.DataFrame(test_predictions, columns=['dummy', 'predicted_value'])
         test_result_df = pd.merge(test_df, test_result_df["predicted_value"], left_index=True, right_index=True)
-        
+
         return test_result_df

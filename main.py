@@ -54,6 +54,6 @@ for col in diff_cols:
 # 学習・予測
 
 xgbTest = xgbObj(train_df, train_labels)
-xgbTest.modeling()
+xgbTest.modeling(num_round=1000)
 
 submission = xgbTest.predict(test_df)
